@@ -1,0 +1,124 @@
+=head1 NAME
+
+cpantestfaq - Frequently Asked Questions Aboout Testing for CPAN
+$Date: 2002/08/20 12:56:18 $
+$Revision: 1.1 $
+
+=head1 DESCRIPTION
+
+This FAQ addresses testing CPAN modules and reporting your test results. It points out how simple it is to begin testing, and tries to help you get started. It also offers tips for more advanced or automated testing with such tools as CPAN and CPANPLUS.
+
+=head1 Before You Begin
+
+The first, and most important thing, to understand about testing for
+CPAN is that it is very, very easy to get started. There's always more
+that you I<can> do, but there's very little that you I<must> do in order
+to get started and be helpful. If you're looking for a way to contribute something to the Perl community, but don't know where to begin, this just might be the place.
+
+=head1 After You Begin
+
+=head2 How do I know which modules I should test?
+
+=over 4
+
+=item 1
+
+Test whatever modules you download to install and use. This is the easiest, most straightforward way to test. You're already running the tests, so why not report the results? If your results match what's already on CPAN for your platform, you needn't report them again. If results for your platform are different from what's on CPAN for your platform, report it. If you can explain the differences, please do so in your report.
+
+=item 2
+
+Test whatever is announced on the CPAN-Testers mailing list. In the days following an announcement that a new module (or a new version of an existing one) has been posted, most authors are alert for problem reports. This is the best time for you to get your results in.
+
+=item 3
+
+Test any modules you find that do not have results noted for the platform you use. Even if a module has not been updated for quite some time - if you find there are no results for that module on your platform, test it and report your results to cpan-testers and to the author.
+
+=item 4
+
+Any time a new version of perl is released, every module on the CPAN should be tested again on every platform. See http://testers.cpan.org/search?request=by-config for more about this.
+
+=back
+
+=head2 How can I tell quickly which modules don't have testing results from my platform?
+
+=over 4
+
+=item *
+
+Check the module's page on CPAN at http://search.cpan.org/
+
+=item *
+
+Use CPANPLUS to check. In the default shell, type 'c Your::Module::Here'
+
+=back
+
+=head2 Should I ignore the line in the module posting message that says no action is required?
+
+Yes, you should.
+
+=head2 How do I test the module distributions?
+
+Install them by hand with
+
+	perl Makefile.PL;
+	make;
+	make test;
+
+Notice the results shown after make test.
+Run cpantest to submit the results from your platform.
+If anything other than PASS, add notes saying what failed and, if you can, why.
+If you can fix it, fix it and include the fix with your report if it's small. If it's not small, ask the author how to submit it.
+
+Always send a copy of your message to the author. Not every one of them monitors the CPAN-Testers mailing list as closely as you might like.
+
+=head2 What alternatives are there to testing by hand?
+
+If you have the CPAN module installed and configured you can do C<perl -MPCAN -e 'test Some::Module'>
+
+If you have CPANPLUS installed, you can run C<t Some::Module> in the default shell. Or you can write your own interface. 
+
+CPANPLUS is an excellent tool for interacting with the Comprehensive Perl Archive Network. If you're interested in automating your tests, and don't mind a little setup work and a touch of uncertainty. It has not reached version 1.0 as of this writing (2002-07-09) and the authors do not promise backward-compatibility until version 1.0 is released. Many of the testers you see posting lots of results are not doing all that work by hand.
+
+=head2 How do I report results?
+
+Use the C<cpantest> script, available from http://testers.cpan.org/. If you just run it as 'C<cpantest>' it will give you usage notes. Generally, you should run it from the directory in which the module unpacked. Unless you ask it not to, C<cpantest> will prompt you for the name and version of the module you're testing, using the name of the current directory as the default answer.
+
+C<cpantest> generates the subject line of the message you'll send, and nearly every automated part of the process is based on that subject line. It's very important that it follow the conventions that C<cpantest> encourages you to use.
+
+The message is sent by deafult to the cpan-testers mailing list. You should always send a copy to the module's author, as well, no matter what result you report.
+
+When reporting results, you choose from one of four grades: PASS, FAIL, UNKNOWN or NA. They are defined as follows:
+
+B<pass>
+
+The build went smoothly and every test included with the package either passed or was skipped.
+
+B<fail>
+
+Some or all tests failed. If you get a fatal error during the build process (C<perl Makefile.PL> or  C<make>) you should grade the distribution as "fail", too. The only failures that should not be reported with B<fail> are those resulting from unfulfilled dependencies. Some modules require that other modules be installed in order to function. Some modules require that you have certain software on your system - the DBD modules are the clearest example of this. If DBD::MySQL fails because you don't have MySQL installed, that's not the module's fault.
+
+Actually, that depends on I<how> it fails. If it complains during C<perl Makefile.PL> that a dependency is unfulfilled, then the module distribution is behaving properly. You should not report any result. Your system does not meet the requirements that the module distribution laid out, and is therefore not a valid testing platform right now. You may choose to satisfy the dependency by installing whatever the module asked for. If you do that, start the installation over.
+
+If C<perl Makefile.PL> does not complain, but something fails during C<make test>, then you should report B<fail>. If you can tell that it's simply an unfulfilled dependency that was not noticed during C<perl Makefile.PL>, say so in your error report so that the author can adjust the makefile to check next time.
+
+B<unknown>
+
+No tests were supplied in the module distribution. Modules are supposed to be distributed with tests - it is an error (but not a failure) if there are none. This grade is not seen very often, so take a minute to include a note in your result asking the author to please include some tests with the next version. Just in case the author doesn't know what I<unknown> means.
+
+B<na>
+
+The module was specifically designed not to function on the platform you're running. Typically, these are packages that take advantage of a particular operating system, such as those in the WIN32 or Mac namespaces. Unless there's a good reason for it, all modules should work on all platforms.
+
+
+=head2 What do I do if tests fail?
+
+Do what you'd want someone to do for you. Report the problems with as much detail as the author will need in order to fix - or at least understand - the problem. Most important is to send the output of the command were the failure occurred. Second most important is to pay attention to your e-mail and do your best to reply intelligently if the author has follow-up questions.
+
+=head1 AUTHOR
+
+This document is copyright 2002, Brian King.
+Permission is granted to re-distribute this FAQ in its entirety.
+That's the whole point.
+
+Please send updates, questions or criticism to Brian King <mrbbking@mac.com>, or /msg mrbbking at http://www.perlmonks.org/
